@@ -15,7 +15,6 @@ class brick(pygame.sprite.Sprite):
 	def __init__(self, size, location):
 		pygame.sprite.Sprite.__init__(self)
 		self.size = size
-		self.loc = location
 		self.surf = pygame.Surface(size)
 		self.surf.fill(colorgray)
 		self.rect = self.surf.get_rect()
