@@ -29,6 +29,11 @@ class board():
 		else:
 			return y-1, y+2
 
+	def setbarriers(self, barriers):
+		for barrier in barriers:
+			x, y = barrier
+			self.spt[y][x] = math.inf
+
 	def printboard(self):
 		for row in self.dist:
 			row_str = str()
@@ -55,11 +60,10 @@ class board():
 		return minv
 
 	def dijkstra(self, startpoint, endpoint):
-		coordx,coordy = startpoint
-		self.dist[coordy-1][coordx-1] = 0
-
+		xstart,ystart = startpoint
 		xend, yend = endpoint
-		xend, yend = xend-1, yend-1
+		
+		self.dist[ystart][xstart] = 0
 
 		while not self.spt[yend][xend]:
 			(x, y) = self.mindistv()
@@ -73,12 +77,35 @@ class board():
 					if self.spt[i][j] == False and self.dist[i][j]>1+self.dist[y][x]:
 						self.dist[i][j] = 1+self.dist[y][x]
 
+		distance = self.dist[yend][xend]
+		shortestpath = [(xend, yend)]
+		while distance != 0:
+			xl, xu = self.getwidthrange(xend)
+			yl, yu = self.getheightrange(yend)
+
+			for i in range(yl, yu):
+				for j in range(xl, xu):
+					if self.dist[i][j] < distance:
+						shortestpath.insert(0, (j,i))
+						distance = self.dist[i][j]
+						xend = j
+						yend = i
+						break
+				else:
+					continue
+				break
+
+		return shortestpath
+
 #main for tests
 if __name__ == "__main__":
 	test = board(5, 5)
+	barriers = [(1,2),(1,3),(1,4)]
+	test.setbarriers(barriers)
 	#test.printboard()
 	#(x,y) = test.mindistv()
 	#print(x, y)
-	test.dijkstra((3,5),(5,4))
+	shortestpath = test.dijkstra((2,3),(0,0))
 	test.printboard()
-	test.printspt()
+	#test.printspt()
+	print(shortestpath)
