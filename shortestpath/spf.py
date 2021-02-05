@@ -4,7 +4,7 @@ import math
 #data structure
 class board():
 
-	def __init__(self, height, width):
+	def __init__(self, width, height):
 		self.height = height
 		self.width = width
 		self.numofv = height*width
@@ -38,14 +38,14 @@ class board():
 		for row in self.dist:
 			row_str = str()
 			for v in row:
-				row_str += str(v)+' '
+				row_str += str(v)+'\t'
 			print(row_str)
 
 	def printspt(self):
 		for row in self.spt:
 			row_str = str()
 			for v in row:
-				row_str += str(v)+' '
+				row_str += str(v)+'\t'
 			print(row_str)
 
 #path-finding
@@ -62,7 +62,7 @@ class board():
 	def dijkstra(self, startpoint, endpoint):
 		xstart,ystart = startpoint
 		xend, yend = endpoint
-		
+
 		self.dist[ystart][xstart] = 0
 
 		while not self.spt[yend][xend]:
@@ -94,10 +94,9 @@ class board():
 				else:
 					continue
 				break
-
 		return shortestpath
 
-#main for tests
+#tests
 if __name__ == "__main__":
 	test = board(5, 5)
 	barriers = [(1,2),(1,3),(1,4)]
