@@ -5,11 +5,6 @@ from pygame.locals import *
 import board
 import spf
 
-#globals
-mousefunction = 'endpoints'
-endpoints = [None, None]
-barriers = []
-
 #static
 screen_width = 1000
 screen_height = 800
@@ -23,19 +18,15 @@ red = (255, 0, 0)
 green = (0, 255, 0)
 white = (255, 255, 255)
 
-def mouseactions():
-	global mousefunction, endpoints, barriers
+def mouseactions(mousefunction, endpoints, barriers):
 	extraendpoint = None
 	point = pygame.mouse.get_pos()
 	for b in bricks:
-		# if extraendpoint and b.location == extraendpoint:
-		# 	b.togglered()
-		# 	extraendpoint = None
 		if (b.rect.collidepoint(point)):
 			if mousefunction == 'endpoints':
 				if b.togglered():
 					endpoints.insert(0,b.location)
-					extraendpoint = endpoints.pop()
+					extraendpoint = endpoints.pop()		#limit number of endpoints
 					if extraendpoint:
 						x,y = extraendpoint
 						extrab = bricks[x*numofrows+y]
@@ -54,8 +45,7 @@ def mouseactions():
 					barriers.pop(bindex)
 			screen.blit(b.surf, b.rect)
 
-def keyactions():
-	global mousefunction, endpoints, barriers
+def keyactions(endpoints, barriers):
 	if event.key == pygame.K_SPACE:		#find shortest path
 		gameboard = spf.board(numofcolumns, numofrows)
 		gameboard.setbarriers(barriers)
@@ -64,18 +54,23 @@ def keyactions():
 			if b.location in sp:
 				b.surf.fill(green)
 				screen.blit(b.surf, b.rect)
-	if event.key == pygame.K_e:
-		mousefunction = 'endpoints'
-	if event.key == pygame.K_b:
-		mousefunction = 'barriers'
+	if event.key == pygame.K_e:		#set start/end points
+		return 'endpoints'
+	if event.key == pygame.K_b:		#set barriers
+		return 'barriers'
 	if event.key == pygame.K_ESCAPE:    #reset
 		endpoints = [None, None]
 		barriers = []
 		for b in bricks:
 			b.surf.fill(gray)
 			screen.blit(b.surf, b.rect)
+		return 'endpoints'
 #main
 if __name__ == "__main__":
+
+	mousefunction = 'endpoints'
+	endpoints = [None, None]
+	barriers = []
 
 	pygame.init()
 
@@ -91,9 +86,9 @@ if __name__ == "__main__":
 	while True:
 		for event in pygame.event.get():
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				mouseactions()
+				mouseactions(mousefunction, endpoints, barriers)
 			if event.type  == pygame.KEYDOWN:
-				keyactions()
+				mousefunction = keyactions(endpoints, barriers)
 			if event.type == QUIT:
 				pygame.quit()
 				sys.exit()

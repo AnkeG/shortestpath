@@ -12,7 +12,7 @@ class board():
 		self.spt = [[False for column in range(width)]
 		for row in range(height)]
 
-	def getwidthrange(self,x):
+	def getwidthrange(self,x):		#detect edges
 		if x == 0:
 			return 0, x+2
 		elif x == self.width-1:
@@ -20,7 +20,7 @@ class board():
 		else:
 			return x-1, x+2
 
-	def getheightrange(self,y):
+	def getheightrange(self,y):		#detect edges
 		if y == 0:
 			return 0, y+2
 		elif y == self.height-1:
@@ -28,7 +28,7 @@ class board():
 		else:
 			return y-1, y+2
 
-	def getneighbors(self, x, y):
+	def getneighbors(self, x, y):		#used for checking up/down/left/right first
 		xl, xu = self.getwidthrange(x)
 		yl, yu = self.getheightrange(y)
 		neighbors = []
@@ -45,15 +45,15 @@ class board():
 			x, y = barrier
 			self.spt[y][x] = math.inf
 
-	def printboard(self):
+	def printboard(self):			#debug tool
 		for row in self.dist:
 			row_str = str()
 			for v in row:
 				row_str += str(v)+'\t'
 			print(row_str)
 
-	def printspt(self):
-		for row in self.spt:
+	def printspt(self):    
+		for row in self.spt:		#debug tool
 			row_str = str()
 			for v in row:
 				row_str += str(v)+'\t'
@@ -80,7 +80,7 @@ class board():
 			(x, y) = self.mindistv()
 			self.spt[y][x] = True
 
-			xl, xu = self.getwidthrange(x)
+			xl, xu = self.getwidthrange(x) 
 			yl, yu = self.getheightrange(y)
 
 			for i in range(yl, yu):
@@ -88,6 +88,7 @@ class board():
 					if self.spt[i][j] == False and self.dist[i][j]>1+self.dist[y][x]:
 						self.dist[i][j] = 1+self.dist[y][x]
 
+		#record the shortest path
 		distance = self.dist[yend][xend]
 		shortestpath = [(xend, yend)]
 		while distance != 0:
