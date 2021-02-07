@@ -1,6 +1,5 @@
 #imports
 import math
-
 #data structure
 class board():
 
@@ -28,6 +27,18 @@ class board():
 			return y-1, y+1
 		else:
 			return y-1, y+2
+
+	def getneighbors(self, x, y):
+		xl, xu = self.getwidthrange(x)
+		yl, yu = self.getheightrange(y)
+		neighbors = []
+		for i in range(yl, yu):
+			for j in range(xl, xu):
+				if i == y or j == x:
+					neighbors.insert(0, (j, i))
+				else:
+					neighbors.append((j, i))
+		return neighbors
 
 	def setbarriers(self, barriers):
 		for barrier in barriers:
@@ -80,20 +91,15 @@ class board():
 		distance = self.dist[yend][xend]
 		shortestpath = [(xend, yend)]
 		while distance != 0:
-			xl, xu = self.getwidthrange(xend)
-			yl, yu = self.getheightrange(yend)
-
-			for i in range(yl, yu):
-				for j in range(xl, xu):
-					if self.dist[i][j] < distance:
-						shortestpath.insert(0, (j,i))
-						distance = self.dist[i][j]
-						xend = j
-						yend = i
-						break
-				else:
-					continue
-				break
+			neighbors = self.getneighbors(xend, yend)
+			for neighbor in neighbors:
+				dx, dy = neighbor
+				if self.dist[dy][dx] < distance:
+					shortestpath.insert(0, (dx,dy))
+					distance = self.dist[dy][dx]
+					xend = dx
+					yend = dy
+					break
 		return shortestpath
 
 #tests
