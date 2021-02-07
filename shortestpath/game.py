@@ -37,12 +37,11 @@ def mouseactions():
 					endpoints.insert(0,b.location)
 					extraendpoint = endpoints.pop()
 					if extraendpoint:
-						for bx in bricks:
-							if bx.location == extraendpoint:
-								bx.surf.fill(gray)
-								screen.blit(bx.surf, bx.rect)
-								extraendpoint = None
-								break
+						x,y = extraendpoint
+						extrab = bricks[x*numofrows+y]
+						extrab.surf.fill(gray)
+						screen.blit(extrab.surf, extrab.rect)
+						extraendpoint = None
 				else:
 					bindex = endpoints.index(b.location)
 					endpoints.pop(bindex)
@@ -81,13 +80,13 @@ if __name__ == "__main__":
 	pygame.init()
 
 	screen = pygame.display.set_mode(screen_size)
-	bricks = pygame.sprite.Group()
+	bricks = []
 
 	for x in range(numofcolumns):
 		for y in range(numofrows):
 			b = board.brick(brick_size, (x, y), brick_side)
 			screen.blit(b.surf, b.rect)
-			bricks.add(b)
+			bricks.append(b)
 
 	while True:
 		for event in pygame.event.get():

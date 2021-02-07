@@ -7,7 +7,7 @@ python 3.8.6
 pygame 2.0.1  
   
 ## Instructions:  
-run board.py to start  
+run game.py to start  
 'b' -- set mouse function to setting barriers  
 'e' -- set mouse function to select start/end points (only allow two points)  
 'space' -- finding the shorted path  
