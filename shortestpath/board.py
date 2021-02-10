@@ -2,32 +2,28 @@ import pygame
 from pygame.locals import *
 
 gray = (152, 152, 152)
-red = (255, 0, 0)
-green = (0, 255, 0)
-white = (255, 255, 255)
 
 class brick(pygame.sprite.Sprite):
-	def __init__(self, size, location, brick_side):
+	def __init__(self, location, brick_side, screen):
 		pygame.sprite.Sprite.__init__(self)
-		self.surf = pygame.Surface(size)
-		self.surf.fill(gray)
+		self.surf = pygame.Surface((brick_side,brick_side))
 		self.rect = self.surf.get_rect()
 		self.location = location
 		x, y = location
 		self.rect.topleft = (x*brick_side, y*brick_side)
+		self.screen = screen
 
-	def togglered(self):
-		if self.surf.get_at((0,0)) != red:
-			self.surf.fill(red)
+	def togglecolor(self, color):
+		if self.surf.get_at((0,0)) != color:
+			self.surf.fill(color)
+			self.screen.blit(self.surf, self.rect)
 			return True
 		else:
 			self.surf.fill(gray)
+			self.screen.blit(self.surf, self.rect)
 			return False
+		
 
-	def togglewhite(self):
-		if self.surf.get_at((0,0)) != white:
-			self.surf.fill(white)
-			return True
-		else:
-			self.surf.fill(gray)
-			return False
+	def fillcolor(self, color):
+		self.surf.fill(color)
+		self.screen.blit(self.surf, self.rect)

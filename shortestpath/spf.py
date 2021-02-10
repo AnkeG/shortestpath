@@ -1,7 +1,11 @@
 #imports
 import math
+import board
+import pygame
+#static
+yellow = (255,255,0)
 #data structure
-class board():
+class gameboard():
 
 	def __init__(self, width, height):
 		self.height = height
@@ -53,14 +57,14 @@ class board():
 			print(row_str)
 
 	def printspt(self):    
-		for row in self.spt:		#debug tool
+		for row in self.spt:
 			row_str = str()
 			for v in row:
 				row_str += str(v)+'\t'
 			print(row_str)
 
 #path-finding
-	def mindistv(self):
+	def mindistv(self):				#find vertice with minimum distance
 		mini = math.inf
 		minv = None
 		for y in range(len(self.dist)):
@@ -70,15 +74,20 @@ class board():
 					minv = (x, y)
 		return minv
 
-	def dijkstra(self, startpoint, endpoint):
-		xstart,ystart = startpoint
-		xend, yend = endpoint
+	def dijkstra(self, endpoints, bricks):
+		xstart,ystart = endpoints[0]
+		xend, yend = endpoints[1]
 
 		self.dist[ystart][xstart] = 0
 
 		while not self.spt[yend][xend]:
 			(x, y) = self.mindistv()
 			self.spt[y][x] = True
+			if bricks:
+				clock = pygame.time.Clock()
+				bricks[x*self.height+y].fillcolor(yellow)
+				pygame.display.update()
+				clock.tick(50)
 
 			xl, xu = self.getwidthrange(x) 
 			yl, yu = self.getheightrange(y)

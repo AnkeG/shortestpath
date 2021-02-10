@@ -14,6 +14,5 @@ run game.py to start
 'esc' -- reset the game board  
 
 ## To-do list:  
-1. add animation to show the path finding process
-2. clearer GUI for set barrier and end points
-3. implementing A * path finding as second spt option
+1. clearer GUI for set barrier and end points
+2. implementing A * path finding as second spt option
