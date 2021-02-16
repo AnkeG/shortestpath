@@ -81,7 +81,10 @@ class gameboard():
 		self.dist[ystart][xstart] = 0
 
 		while not self.spt[yend][xend]:
-			(x, y) = self.mindistv()
+			mindist = self.mindistv()
+			if not mindist:
+				return None
+			x, y = mindist
 			self.spt[y][x] = True
 			if bricks:
 				clock = pygame.time.Clock()

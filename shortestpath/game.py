@@ -51,9 +51,10 @@ def keyactions(bricks, setting):
 				sp = gameboard.dijkstra(setting.endpoints, bricks)
 			else:
 				sp = gameboard.dijkstra(setting.endpoints, None)
-			for b in bricks:
-				if b.location in sp:
-					b.fillcolor(green)
+			if sp:
+				for b in bricks:
+					if b.location in sp:
+						b.fillcolor(green)
 			setting.mousefunction = None
 	if event.key == pygame.K_e:		#set start/end points
 		setting.mousefunction = 'endpoints'
