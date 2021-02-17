@@ -1,5 +1,5 @@
 #imports
-import math
+import math, heapq
 import board
 import pygame
 #static
@@ -15,6 +15,7 @@ class gameboard():
 		for row in range(height)]
 		self.spt = [[False for column in range(width)]
 		for row in range(height)]
+		self.barriers = []
 
 	def getwidthrange(self,x):		#detect edges
 		if x == 0:
@@ -38,16 +39,15 @@ class gameboard():
 		neighbors = []
 		for i in range(yl, yu):
 			for j in range(xl, xu):
-				if i == y or j == x:
-					neighbors.insert(0, (j, i))
-				else:
-					neighbors.append((j, i))
+				if (j, i) not in self.barriers:
+					if i == y or j == x:
+						neighbors.insert(0, (j, i))
+					else:
+						neighbors.append((j, i))
 		return neighbors
 
 	def setbarriers(self, barriers):
-		for barrier in barriers:
-			x, y = barrier
-			self.spt[y][x] = math.inf
+		self.barriers = barriers
 
 	def printboard(self):			#debug tool
 		for row in self.dist:
@@ -82,7 +82,7 @@ class gameboard():
 
 		while not self.spt[yend][xend]:
 			mindist = self.mindistv()
-			if not mindist:
+			if not mindist:			#No path
 				return None
 			x, y = mindist
 			self.spt[y][x] = True
@@ -91,14 +91,11 @@ class gameboard():
 				bricks[x*self.height+y].fillcolor(yellow)
 				pygame.display.update()
 				clock.tick(50)
-
-			xl, xu = self.getwidthrange(x) 
-			yl, yu = self.getheightrange(y)
-
-			for i in range(yl, yu):
-				for j in range(xl, xu):
-					if self.spt[i][j] == False and self.dist[i][j]>1+self.dist[y][x]:
-						self.dist[i][j] = 1+self.dist[y][x]
+			neighbors = self.getneighbors(x, y)
+			for neighbor in neighbors:
+				dx, dy = neighbor
+				if self.spt[dy][dx] == False and self.dist[dy][dx]>1+self.dist[y][x]:
+					self.dist[dy][dx] = 1+self.dist[y][x]
 
 		#record the shortest path
 		distance = self.dist[yend][xend]
@@ -115,15 +112,57 @@ class gameboard():
 					break
 		return shortestpath
 
+	def h_score(self, node, end):
+		return max(abs(node[0]-end[0]), abs(node[1]-end[1]))
+
+	def a_star(self, endpoints, bricks):
+		xstart,ystart = endpoints[0]
+		xend,yend = endpoints[1]
+
+		open_list = []
+		heapq.heappush(open_list, (0, (xstart, ystart)))
+
+		cameFrom = dict()
+
+		gscore = self.dist.copy()
+		gscore[ystart][xstart] = 0
+
+		fscore = self.dist.copy()
+		fscore[ystart][xstart] = self.h_score((xstart, ystart), (xend, yend))
+
+		while open_list:
+			current_f, current = heapq.heappop(open_list)
+			if current == (xend, yend):
+				shortestpath = [current]
+				while current in cameFrom:
+					current = cameFrom[current]
+					shortestpath.append(current)
+				return shortestpath
+			x, y = current
+			neighbors = self.getneighbors(x, y)
+			for neighbor_x,neighbor_y in neighbors:
+				temp_g = gscore[y][x] +1
+				if temp_g < gscore[neighbor_y][neighbor_x]:
+					cameFrom[(neighbor_x, neighbor_y)] = current
+					gscore[neighbor_y][neighbor_x] = temp_g
+					f = fscore[neighbor_y][neighbor_x] = temp_g + self.h_score((neighbor_x, neighbor_y), (xend, yend))
+					if (f, (neighbor_x, neighbor_y)) not in open_list:
+						heapq.heappush(open_list, (f, (neighbor_x, neighbor_y)))
+
+		return False
+
+
+
 #tests
 if __name__ == "__main__":
-	test = board(5, 5)
+	test = gameboard(5, 5)
 	barriers = [(1,2),(1,3),(1,4)]
 	test.setbarriers(barriers)
 	#test.printboard()
 	#(x,y) = test.mindistv()
 	#print(x, y)
-	shortestpath = test.dijkstra((2,3),(0,0))
-	test.printboard()
+	#shortestpath = test.dijkstra((2,3),(0,0))
+	shortestpath = test.a_star([(2,3),(0,0)], None)
+	#test.printboard()
 	#test.printspt()
 	print(shortestpath)
