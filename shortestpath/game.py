@@ -47,10 +47,16 @@ def keyactions(bricks, setting):
 		if setting.endpoints[0] and setting.endpoints[1]:
 			gameboard = spf.gameboard(numofcolumns, numofrows)
 			gameboard.setbarriers(setting.barriers)
-			if setting.animation:
-				sp = gameboard.dijkstra(setting.endpoints, bricks)
-			else:
-				sp = gameboard.dijkstra(setting.endpoints, None)
+			if setting.algorithm == 'dijkstra':
+				if setting.animation:
+					sp = gameboard.dijkstra(setting.endpoints, bricks)
+				else:
+					sp = gameboard.dijkstra(setting.endpoints, None)
+			if setting.algorithm == 'a_star':
+				if setting.animation:
+					sp = gameboard.a_star(setting.endpoints, bricks)
+				else:
+					sp = gameboard.a_star(setting.endpoints, None)
 			if sp:
 				for b in bricks:
 					if b.location in sp:
@@ -60,6 +66,10 @@ def keyactions(bricks, setting):
 		setting.mousefunction = 'endpoints'
 	if event.key == pygame.K_b:		#set barriers
 		setting.mousefunction = 'barriers'
+	if event.key == pygame.K_s:
+		setting.algorithm = 'a_star'
+	if event.key == pygame.K_d:
+		setting.algorithm = 'dijkstra'
 	if event.key == pygame.K_a:
 		setting.animation = not setting.animation
 	if event.key == pygame.K_ESCAPE:    #reset
@@ -77,6 +87,7 @@ if __name__ == "__main__":
 			self.animation = False
 			self.endpoints = [None, None]
 			self.barriers = []
+			self.algorithm = 'dijkstra'
 
 	pygame.init()
 	screen = pygame.display.set_mode(screen_size)

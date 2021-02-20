@@ -124,23 +124,28 @@ class gameboard():
 
 		cameFrom = dict()
 
-		gscore = self.dist.copy()
+		gscore = self.dist.copy()			#distance from start
 		gscore[ystart][xstart] = 0
 
-		fscore = self.dist.copy()
+		fscore = self.dist.copy()			#estimated distance to the end
 		fscore[ystart][xstart] = self.h_score((xstart, ystart), (xend, yend))
 
 		while open_list:
 			current_f, current = heapq.heappop(open_list)
-			if current == (xend, yend):
+			if current == (xend, yend):			#got to the end, retrack sp
 				shortestpath = [current]
 				while current in cameFrom:
 					current = cameFrom[current]
 					shortestpath.append(current)
 				return shortestpath
 			x, y = current
+			if bricks:						#animation
+				clock = pygame.time.Clock()
+				bricks[x*self.height+y].fillcolor(yellow)
+				pygame.display.update()
+				clock.tick(50)
 			neighbors = self.getneighbors(x, y)
-			for neighbor_x,neighbor_y in neighbors:
+			for neighbor_x,neighbor_y in neighbors:		#path finding
 				temp_g = gscore[y][x] +1
 				if temp_g < gscore[neighbor_y][neighbor_x]:
 					cameFrom[(neighbor_x, neighbor_y)] = current
@@ -156,13 +161,13 @@ class gameboard():
 #tests
 if __name__ == "__main__":
 	test = gameboard(5, 5)
-	barriers = [(1,2),(1,3),(1,4)]
+	barriers = [(1,2),(1,3),(1,4),(2,2),(2,3)]
 	test.setbarriers(barriers)
 	#test.printboard()
 	#(x,y) = test.mindistv()
 	#print(x, y)
 	#shortestpath = test.dijkstra((2,3),(0,0))
-	shortestpath = test.a_star([(2,3),(0,0)], None)
+	shortestpath = test.a_star([(3,4),(0,0)], None)
 	#test.printboard()
 	#test.printspt()
 	print(shortestpath)
