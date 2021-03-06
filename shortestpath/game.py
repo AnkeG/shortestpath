@@ -4,6 +4,7 @@ import pygame
 from pygame.locals import *
 import board
 import spf
+import panel
 
 #static
 screen_width = 500
@@ -62,22 +63,25 @@ def keyactions(bricks, setting):
 					if b.location in sp:
 						b.fillcolor(green)
 			setting.mousefunction = None
-	if event.key == pygame.K_e:		#set start/end points
-		setting.mousefunction = 'endpoints'
-	if event.key == pygame.K_b:		#set barriers
-		setting.mousefunction = 'barriers'
-	if event.key == pygame.K_s:
-		setting.algorithm = 'a_star'
-	if event.key == pygame.K_d:
-		setting.algorithm = 'dijkstra'
-	if event.key == pygame.K_a:
-		setting.animation = not setting.animation
+
 	if event.key == pygame.K_ESCAPE:    #reset
 		setting.mousefunction = 'endpoints'
 		setting.endpoints = [None, None]
 		setting.barriers = []
 		for b in bricks:
 			b.fillcolor(gray)
+
+	# if event.key == pygame.K_e:		#set start/end points
+	# 	setting.mousefunction = 'endpoints'
+	# if event.key == pygame.K_b:		#set barriers
+	# 	setting.mousefunction = 'barriers'
+	# if event.key == pygame.K_s:
+	# 	setting.algorithm = 'a_star'
+	# if event.key == pygame.K_d:
+	# 	setting.algorithm = 'dijkstra'
+	# if event.key == pygame.K_a:
+	# 	setting.animation = not setting.animation
+
 	return setting
 #main
 if __name__ == "__main__":
@@ -95,6 +99,8 @@ if __name__ == "__main__":
 	setting = setting()
 	bricks = []
 
+	controlpanel = panel.controlpanel()
+
 	for x in range(numofcolumns):
 		for y in range(numofrows):
 			b = board.brick((x, y), brick_side, screen)
@@ -103,6 +109,7 @@ if __name__ == "__main__":
 
 	while True:
 		for event in pygame.event.get():
+			setting = controlpanel.getsetting(setting)
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				mouseactions(bricks, setting)
 			if event.type  == pygame.KEYDOWN:
@@ -111,4 +118,5 @@ if __name__ == "__main__":
 				pygame.quit()
 				sys.exit()
 
+		controlpanel.update()
 		pygame.display.update()

@@ -7,14 +7,10 @@ python 3.8.6
 pygame 2.0.1  
   
 ## Instructions:  
-run game.py to start  
-'a' -- enable animation
-'b' -- set mouse function to setting barriers  
-'d' -- set to dijkstra
-'e' -- set mouse function to select start/end points (only allow two points)
-'s' -- set to a * path finding
+run game.py to start
 'space' -- finding the shorted path  
 'esc' -- reset the game board  
 
 ## To-do list:  
-1. using a tkinter window for settings
+1. implement 'run' and 'reset' button
+2. feedback result
