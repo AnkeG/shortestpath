@@ -62,12 +62,14 @@ def keyactions(bricks, setting):
 				for b in bricks:
 					if b.location in sp:
 						b.fillcolor(green)
+			setting.result = len(sp)-1
 			setting.mousefunction = None
 
 	if event.key == pygame.K_ESCAPE:    #reset
 		setting.mousefunction = 'endpoints'
 		setting.endpoints = [None, None]
 		setting.barriers = []
+		setting.result = None
 		for b in bricks:
 			b.fillcolor(gray)
 
@@ -83,15 +85,18 @@ def keyactions(bricks, setting):
 	# 	setting.animation = not setting.animation
 
 	return setting
+
+class setting:
+	def __init__(self):
+		self.mousefunction = 'endpoints'
+		self.animation = False
+		self.endpoints = [None, None]
+		self.barriers = []
+		self.algorithm = 'dijkstra'
+		self.result = None
+		
 #main
 if __name__ == "__main__":
-	class setting:
-		def __init__(self):
-			self.mousefunction = 'endpoints'
-			self.animation = False
-			self.endpoints = [None, None]
-			self.barriers = []
-			self.algorithm = 'dijkstra'
 
 	pygame.init()
 	screen = pygame.display.set_mode(screen_size)

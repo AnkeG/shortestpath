@@ -5,7 +5,6 @@ import tkinter as tk
 	#pass
 
 class controlpanel:
-
 	def __init__(self):
 		self.window = tk.Tk()
 		self.window.title("Setting Panel")
@@ -28,19 +27,27 @@ class controlpanel:
 		self.menuoptionmenu.grid(row = 0, column = 1, padx =5)
 
 		self.progress = tk.BooleanVar()
-		self.checkbutton = tk.Checkbutton(self.window, text ='Show Progression', variable = self.progress, onvalue = True, offvalue = False )
+		self.checkbutton = tk.Checkbutton(self.window, text ='Show Progression', 
+			variable = self.progress, onvalue = True, offvalue = False )
 
-		self.buttonsframe = tk.Frame(self.window)
-		self.runbutton = tk.Button(self.buttonsframe, text = 'Run', command = self.run)
-		self.runbutton.grid(row = 0, column = 0, padx = 5, pady = 5)
-		self.resetbutton = tk.Button(self.buttonsframe, text = 'Reset', command = self.reset)
-		self.resetbutton.grid(row = 0, column = 1, padx = 5, pady = 5)
+		# self.buttonsframe = tk.Frame(self.window)
+		# self.runbutton = tk.Button(self.buttonsframe, text = 'Run', command = self.run)
+		# self.runbutton.grid(row = 0, column = 0, padx = 5, pady = 5)
+		# self.resetbutton = tk.Button(self.buttonsframe, text = 'Reset', command = self.reset)
+		# self.resetbutton.grid(row = 0, column = 1, padx = 5, pady = 5)
 
+		self.instruction = tk. Label(self.window, text = "'SPACE' -- start;  'ESC' -- reset")
+
+		self.resultstr = tk.StringVar()
+		#self.resultstr.set("No result")
+		self.result = tk.Label(self.window, textvariable = self.resultstr)
 
 		self.mouseframe.pack()
 		self.menuframe.pack()
 		self.checkbutton.pack()
-		self.buttonsframe.pack()
+		#self.buttonsframe.pack()
+		self.instruction.pack()
+		self.result.pack()
 
 		#window.mainloop()
 
@@ -50,11 +57,11 @@ class controlpanel:
 		else:
 			self.mousebutton.configure(text = 'endpoints')
 
-	def run():
-		pass
+	# def run():
+	# 	pass
 
-	def reset():
-		pass
+	# def reset():
+	# 	pass
 
 	def update(self):
 		self.window.update_idletasks()
@@ -64,8 +71,13 @@ class controlpanel:
 		setting.algorithm = self.algorithm.get()
 		setting.animation = self.progress.get()
 		setting.mousefunction = self.mousebutton['text']
+		if setting.result:
+			self.resultstr.set('Result: '+str(setting.result)+' step(s)')
+		else:
+			self.resultstr.set('')
 		return setting
 
+#testing
 if __name__ == "__main__":
 	controlpanel = controlpanel()
 	controlpanel.window.mainloop()
